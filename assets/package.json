@@ -1,0 +1,30 @@
+{
+    "name": "@abasb75/state-manager",
+    "version": "0.0.0-test",
+    "description": "a javascript powerfull state manager",
+    "main": "index.js",
+    "type": "module",
+    "types": "index.d.ts",
+    "keywords": [
+        "state",
+        "state-manager"
+    ],
+    "author": "Abbas Bagheri <abasbagheria@gmail.com>",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/abasb75/state-manager/raction.git"
+    },
+    "bugs": {
+        "url": "https://github.com/abasb75/state-manager/issues"
+    },
+    "homepage": "https://github.com/abasb75/state-manager#readme",
+    "dependencies": {
+        "pako": "^2.1.0"
+    },
+    "peerDependencies": {
+        "pako": "^2.1.0"
+    },
+    "devDependencies": {
+    }
+}
