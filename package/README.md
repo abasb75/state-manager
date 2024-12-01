@@ -1,8 +1,9 @@
 # @abasb75/state-manager
 `@abasb75/state-manager` is a great and best state manager tools for your javascript web applications.  
-1. sync data between opened browser tabs when updating state.
+1. synct data between opened browser tabs.
 2. save data on `localstorage`
 3. great type hint for `state` or defined `action`
+4. 
 
 # installation
 

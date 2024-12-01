@@ -13,22 +13,28 @@ class Store<
     MSState extends { [key:string]:any } & keyof MSState extends string ? {}: "Type must be string",
     MSActions extends { [key:string]:any; } & keyof MSActions extends string ? {} : "Type must be string",
 >{
-
     private state:SMStoreState<MSState>;
+    initialState:SMStoreState<MSState>;
     private storage:Storage<MSState,MSActions>;
     private subscribers:SMSubscriber<any>[] = [];
     private actions:MSExposedMSActions<MSActions,MSState>;
 
-    storageKey:string;
+    storageKey:string = "sm-state";
     storgable:boolean=false;
 
     constructor(storeOptions:SMStoreOptions<MSState,MSActions>){
-        this.state = storeOptions.initialState;
+
+        const initialState = Utitlities.sortObject(storeOptions.initialState as object) as MSState;
+
         this.storageKey = storeOptions.storageKey || 'sm-state';
         this.storgable = storeOptions.storgable || false;
-        this.storage = new Storage<MSState,MSActions>(this );
+
+        this.initialState = initialState ;
+        this.storage = new Storage<MSState,MSActions>(this);
+
+        this.state = this.storage.mergeWithState(initialState );
         this.actions = this._setupActions(storeOptions.actions);
-        
+
     }
 
     destroy(){
@@ -54,27 +60,28 @@ class Store<
 
     syncSet(newState:Partial<SMStoreState<MSState>>,execSubscribers:boolean=true){
         const tempState = this._set(Utitlities.cloneObject(this.state),newState);
-        console.log(JSON.stringify(tempState) , JSON.stringify(this.state));
         if(JSON.stringify(tempState) === JSON.stringify(this.state)){
-
             return;
         }
         
         if(execSubscribers){
             this.execSubscribers({ ...tempState });
         }
-
         this.state = { ...tempState as object} as MSState;
         
     }
 
     private _set(prevValue:any,newValue:any){
-        console.log(typeof prevValue, prevValue , typeof newValue ,newValue)
-        if(typeof prevValue === "object" && typeof newValue === "object"){
+        if(
+            typeof prevValue === "object" 
+            && typeof newValue === "object"
+            && !Array.isArray(prevValue)
+            && !Array.isArray(newValue)
+        ){
             Object.keys(prevValue).forEach((key:string)=>{
                 prevValue[key] = this._set(prevValue[key],newValue[key]);
             });
-            return prevValue;
+            return Utitlities.sortObject(prevValue);
         }
         return newValue;
     }

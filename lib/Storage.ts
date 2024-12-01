@@ -13,15 +13,23 @@ class Storage <
         if(!store.storgable){
             return;
         }
-        window.addEventListener('storage',this._onStorageUpdate);
-        this.set(this.store.get() as MSState);
-        this.subId = store.addSubscriber(this.onStoreStateUpdate)
+        window.addEventListener('storage',this._onStorageUpdate.bind(this));
+        this.subId = store.addSubscriber(this.onStoreStateUpdate.bind(this))
         
     }
 
     destroy() {
-        window.removeEventListener('storage',this._onStorageUpdate);
+        window.removeEventListener('storage',this._onStorageUpdate.bind(this));
         this.store.removeSubscriber(this.subId);
+    }
+
+    mergeWithState(newData:MSState):MSState{
+        const storageData = this.get();
+        this.set({
+            ...newData as object,
+            ...storageData,
+        });
+        return this.get();
     }
 
     private set(data:MSState){

@@ -20,6 +20,27 @@ class Utitlities {
             return source;
         }
     }
+
+    static sortObject(unordered:object){
+        if(typeof unordered !== 'object'){
+            return unordered;
+        }
+        return Object.keys(unordered).sort().reduce(
+            (obj, key) => { 
+                //@ts-ignore
+                if(typeof obj[key] === 'object' && !Array.isArray(obj[key])){
+                    //@ts-ignore
+                    obj[key] = sortObject(unordered[key]);
+                    return obj; 
+                }
+                //@ts-ignore
+                obj[key] = unordered[key];
+                return obj;
+            },
+            {}
+        ) ;
+        
+    }
 }
 
 export default Utitlities;

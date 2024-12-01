@@ -1,7 +1,9 @@
 
 import Header from './comps/header';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import store from './state';
+import AddNote from './comps/addnote';
+import Notes from './comps/notes';
 
 function App() {
 
@@ -10,14 +12,15 @@ function App() {
   useEffect(()=>{
     const subscribeId = store.subscribe((s)=>{
       setDarkMode(s.darkMode);
-      console.log('subscribe',s);
     });
     return ()=>store.unsubscribe(subscribeId);
-  })
+  });
 
   return (
     <main className='w-full h-[100vh]' style={{backgroundColor:darkmode?'#434343':'#f1f1f1'}}>
       <Header />
+      <AddNote  />
+      <Notes />
     </main>
   );
 
