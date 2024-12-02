@@ -10,10 +10,10 @@ function App() {
   const [darkmode,setDarkMode] = useState(store.get(d=>d.darkMode));
 
   useEffect(()=>{
-    const subscribeId = store.subscribe((s)=>{
+    const unsubscribe = store.subscribe((s)=>{
       setDarkMode(s.darkMode);
     });
-    return ()=>store.unsubscribe(subscribeId);
+    return ()=>unsubscribe();
   });
 
   return (

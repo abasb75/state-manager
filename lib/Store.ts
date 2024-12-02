@@ -103,7 +103,8 @@ class Store<
         callback:SMSubscriberCallback<MSState>,
         subscribeTo:SMStateSelector<MSState>=(s)=>s
     ){
-        return this.addSubscriber(callback,subscribeTo);
+        const id  = this.addSubscriber(callback,subscribeTo);
+        return (()=>this.unsubscribe(id)).bind(this);
     }
     
     private _getUnicIdForSubscriber(){

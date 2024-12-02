@@ -151,5 +151,28 @@ store.getActions().counter.increment();
 
 ```
 
+8. For `subscribe` state changes:
+
+```javascript
+const unsubscribe = (state)=>{
+    console.log(state);
+}
+
+// subscribe return itself unsubscribe
+unsubscribe();
+
+// alternative for get subscriber:
+const subscribeId = store.addSubscriber((state)=>{
+    console.log(state);
+});
+
+// and  unsubscribe with subscribeId:
+store.unsubscribe(subscribeId);
+
+```
+
+# Rect
+`@abasb75/react-state-manager` is an extention to use this package in react.
+
 # Examples:
 <a href="https://github.com/abasb75/state-manager/tree/main/react-test">Simple Note App</a>

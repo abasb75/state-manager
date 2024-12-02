@@ -1,4 +1,4 @@
-import { createStore } from "@abasb75/state-manager";
+import createStore from "@lib/createStore";
 
 interface StateType {
     darkMode:boolean;

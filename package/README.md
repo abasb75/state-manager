@@ -1,9 +1,8 @@
 # @abasb75/state-manager
 `@abasb75/state-manager` is a great and best state manager tools for your javascript web applications.  
-1. synct data between opened browser tabs.
+1. sync data between opened browser tabs when updating state.
 2. save data on `localstorage`
 3. great type hint for `state` or defined `action`
-4. 
 
 # installation
 
@@ -151,6 +150,28 @@ store.set({
 store.getActions().counter.increment();
 
 ```
+
+8. For `subscribe` state changes:
+
+```javascript
+const unsubscribe = (state)=>{
+    console.log(state);
+}
+
+// subscribe return itself unsubscribe
+unsubscribe();
+
+// alternative for get subscriber:
+const subscribeId = store.addSubscriber((state)=>{
+    console.log(state);
+});
+
+// and  unsubscribe with subscribeId:
+store.unsubscribe(subscribeId);
+
+```
+
+
 
 # Examples:
 <a href="https://github.com/abasb75/state-manager/tree/main/react-test">Simple Note App</a>

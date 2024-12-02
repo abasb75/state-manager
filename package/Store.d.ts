@@ -19,7 +19,7 @@ declare class Store<MSState extends {
     syncSet(newState: Partial<SMStoreState<MSState>>, execSubscribers?: boolean): void;
     private _set;
     addSubscriber(callback: SMSubscriberCallback<MSState>, subscribeTo?: SMStateSelector<MSState>): number;
-    subscribe(callback: SMSubscriberCallback<MSState>, subscribeTo?: SMStateSelector<MSState>): number;
+    subscribe(callback: SMSubscriberCallback<MSState>, subscribeTo?: SMStateSelector<MSState>): () => void;
     private _getUnicIdForSubscriber;
     removeSubscriber(subscribeId: number): void;
     unsubscribe(subscribeId: number): void;

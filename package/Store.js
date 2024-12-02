@@ -101,7 +101,8 @@ class Store {
         return id;
     }
     subscribe(callback, subscribeTo = (s) => s) {
-        return this.addSubscriber(callback, subscribeTo);
+        const id = this.addSubscriber(callback, subscribeTo);
+        return (() => this.unsubscribe(id)).bind(this);
     }
     _getUnicIdForSubscriber() {
         return this.subscribers.length ? this.subscribers[this.subscribers.length - 1].id + 1 : 0;

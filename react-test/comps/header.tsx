@@ -9,13 +9,13 @@ export default function Header(){
     console.log('rerender');
     const counterRef = useRef<HTMLHeadingElement>(null);
     useEffect(()=>{
-        const subId =   store.subscribe((state)=>{
+        const unsubscribe = store.subscribe((state)=>{
             if(counterRef.current){
                 counterRef.current.innerText  = `${state.counter}`;
             }
         });
         return ()=>{
-            store.unsubscribe(subId);
+            unsubscribe();
         }
     },[]);
 

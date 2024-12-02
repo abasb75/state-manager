@@ -6,10 +6,10 @@ function Notes(){
 
     const [notes,setNotes] = useState(store.get().notes || []);
     useEffect(()=>{
-        const subId = store.subscribe((state)=>{
+        const unsubscribe = store.subscribe((state)=>{
             setNotes(state.notes);
         })
-        return ()=>store.unsubscribe(subId);
+        return ()=>unsubscribe();
     });
 
     return (<div className="w-full px-4 py-3">
