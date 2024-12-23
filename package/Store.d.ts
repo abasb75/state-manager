@@ -11,6 +11,8 @@ declare class Store<MSState extends {
     private actions;
     storageKey: string;
     storgable: boolean;
+    private _prevJsoned;
+    private _newJsoned;
     constructor(storeOptions: SMStoreOptions<MSState, MSActions>);
     destroy(): void;
     get(): MSState;

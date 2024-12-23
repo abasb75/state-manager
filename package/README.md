@@ -171,7 +171,8 @@ store.unsubscribe(subscribeId);
 
 ```
 
-
+# Rect
+`@abasb75/react-state-manager` is an extention to use this package in react.
 
 # Examples:
 <a href="https://github.com/abasb75/state-manager/tree/main/react-test">Simple Note App</a>

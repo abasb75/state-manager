@@ -44,12 +44,29 @@ class Store {
             writable: true,
             value: false
         });
+        Object.defineProperty(this, "_prevJsoned", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: ""
+        });
+        Object.defineProperty(this, "_newJsoned", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: ""
+        });
         const initialState = Utitlities.sortObject(storeOptions.initialState);
         this.storageKey = storeOptions.storageKey || 'sm-state';
         this.storgable = storeOptions.storgable || false;
         this.initialState = initialState;
         this.storage = new Storage(this);
-        this.state = this.storage.mergeWithState(initialState);
+        if (this.storgable) {
+            this.state = this.storage.mergeWithState(initialState);
+        }
+        else {
+            this.state = initialState;
+        }
         this.actions = this._setupActions(storeOptions.actions);
     }
     destroy() {
@@ -71,20 +88,22 @@ class Store {
     }
     syncSet(newState, execSubscribers = true) {
         const tempState = this._set(Utitlities.cloneObject(this.state), newState);
-        if (JSON.stringify(tempState) === JSON.stringify(this.state)) {
+        this._prevJsoned = JSON.stringify(this.state);
+        this._newJsoned = JSON.stringify(tempState);
+        if (this._prevJsoned === this._newJsoned) {
             return;
         }
         if (execSubscribers) {
             this.execSubscribers(Object.assign({}, tempState));
         }
-        this.state = Object.assign({}, tempState);
+        this.state = tempState;
     }
     _set(prevValue, newValue) {
         if (typeof prevValue === "object"
             && typeof newValue === "object"
             && !Array.isArray(prevValue)
             && !Array.isArray(newValue)) {
-            Object.keys(prevValue).forEach((key) => {
+            Object.keys(Object.assign(Object.assign({}, prevValue), newValue)).forEach((key) => {
                 prevValue[key] = this._set(prevValue[key], newValue[key]);
             });
             return Utitlities.sortObject(prevValue);
@@ -118,10 +137,8 @@ class Store {
             try {
                 const oldValue = subscriber.subscribeTo(this.state);
                 const newValue = subscriber.subscribeTo(newData);
-                if (JSON.stringify(newValue) === JSON.stringify(oldValue)) {
-                    return;
-                }
-                subscriber.callback(Utitlities.cloneObject(newValue), Utitlities.cloneObject(oldValue));
+                // subscriber.callback(Utitlities.cloneObject(newValue),Utitlities.cloneObject(oldValue));
+                subscriber.callback(Object.assign({}, newValue), Object.assign({}, oldValue));
             }
             catch (_a) {
                 return;
@@ -137,7 +154,7 @@ class Store {
     _subSetupActions(actions) {
         if (typeof actions === "function") {
             return ((payloads) => {
-                this.set(actions(Utitlities.cloneObject(this.state), payloads));
+                this.set(actions(Object.assign({}, this.state), payloads));
             });
         }
         if (typeof actions !== "object") {

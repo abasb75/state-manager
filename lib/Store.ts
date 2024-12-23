@@ -22,6 +22,10 @@ class Store<
     storageKey:string = "sm-state";
     storgable:boolean=false;
 
+
+    private _prevJsoned:string = "";
+    private _newJsoned:string = "";
+
     constructor(storeOptions:SMStoreOptions<MSState,MSActions>){
 
         const initialState = Utitlities.sortObject(storeOptions.initialState as object) as MSState;
@@ -32,7 +36,11 @@ class Store<
         this.initialState = initialState ;
         this.storage = new Storage<MSState,MSActions>(this);
 
-        this.state = this.storage.mergeWithState(initialState );
+        if(this.storgable){
+            this.state = this.storage.mergeWithState(initialState );
+        }else{
+            this.state = initialState;
+        }
         this.actions = this._setupActions(storeOptions.actions);
 
     }
@@ -60,14 +68,16 @@ class Store<
 
     syncSet(newState:Partial<SMStoreState<MSState>>,execSubscribers:boolean=true){
         const tempState = this._set(Utitlities.cloneObject(this.state),newState);
-        if(JSON.stringify(tempState) === JSON.stringify(this.state)){
+        this._prevJsoned = JSON.stringify(this.state);
+        this._newJsoned = JSON.stringify(tempState);
+        if(this._prevJsoned === this._newJsoned){
             return;
         }
         
         if(execSubscribers){
             this.execSubscribers({ ...tempState });
         }
-        this.state = { ...tempState as object} as MSState;
+        this.state = tempState;
         
     }
 
@@ -78,7 +88,7 @@ class Store<
             && !Array.isArray(prevValue)
             && !Array.isArray(newValue)
         ){
-            Object.keys(prevValue).forEach((key:string)=>{
+            Object.keys({...prevValue,...newValue}).forEach((key:string)=>{
                 prevValue[key] = this._set(prevValue[key],newValue[key]);
             });
             return Utitlities.sortObject(prevValue);
@@ -124,10 +134,11 @@ class Store<
             try{
                 const oldValue = subscriber.subscribeTo(this.state);
                 const newValue = subscriber.subscribeTo(newData);
-                if(JSON.stringify(newValue) === JSON.stringify(oldValue)){
-                    return;
-                }
-                subscriber.callback(Utitlities.cloneObject(newValue),Utitlities.cloneObject(oldValue));
+                // subscriber.callback(Utitlities.cloneObject(newValue),Utitlities.cloneObject(oldValue));
+                subscriber.callback(
+                    Object.assign({},newValue),
+                    Object.assign({},oldValue)
+                )
             }catch{
                 return;
             }
@@ -145,7 +156,7 @@ class Store<
     private _subSetupActions(actions:any){
         if(typeof actions === "function"){
             return ((payloads?:any)=>{
-                this.set(actions(Utitlities.cloneObject(this.state),payloads));
+                this.set(actions(Object.assign({},this.state),payloads));
             });
         }
         if(typeof actions !== "object"){

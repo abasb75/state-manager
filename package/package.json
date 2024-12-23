@@ -1,6 +1,6 @@
 {
     "name": "@abasb75/state-manager",
-    "version": "0.0.0-test6",
+    "version": "0.0.0-test9",
     "description": "a javascript powerfull state manager",
     "main": "index.js",
     "type": "module",

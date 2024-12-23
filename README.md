@@ -61,7 +61,6 @@ const actions = {
     },
     notes:{
         add:(state:StateType,text:string):StateType=>{
-            console.log('add worked!')
             return {
                 ...state,
                 notes:[
@@ -137,7 +136,7 @@ const state = store.get(state=>state.counter); //return counter value
 ```javascript
 
 store.set({
-  counter:0;
+  counter:0,
 }).then(state=>{
   console.log(state.counter);
 });
@@ -154,9 +153,9 @@ store.getActions().counter.increment();
 8. For `subscribe` state changes:
 
 ```javascript
-const unsubscribe = (state)=>{
+const unsubscribe = store.subscribe((state)=>{
     console.log(state);
-}
+});
 
 // subscribe return itself unsubscribe
 unsubscribe();
